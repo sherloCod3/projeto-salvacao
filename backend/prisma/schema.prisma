@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String        @id @default(uuid())
+  name             String
+  email            String?       @unique
+  phone            String?
+  role             Role          @default(USER)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  authoredRequests HelpRequest[] @relation("AuthoredRequests")
+  helpingRequests  HelpRequest[] @relation("HelpingRequests")
+}
+
+model HelpRequest {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  latitude    Float
+  longitude   Float
+  priority    Priority
+  status      Status      @default(OPEN)
+  type        RequestType
+  
+  authorId    String?
+  author      User?       @relation("AuthoredRequests", fields: [authorId], references: [id])
+  
+  volunteerId String?
+  volunteer   User?       @relation("HelpingRequests", fields: [volunteerId], references: [id])
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum Role {
+  USER
+  VOLUNTEER
+  ADMIN
+}
+
+enum Priority {
+  CRITICAL
+  URGENT
+  MODERATE
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum RequestType {
+  SHELTER
+  RESCUE
+  SUPPLIES
+  MEDICAL
+  OTHER
+}
