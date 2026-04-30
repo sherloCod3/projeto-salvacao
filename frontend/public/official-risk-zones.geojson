@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zona de Inundação Histórica - Centro Histórico",
+        "riskLevel": "HIGH",
+        "type": "OFFICIAL_RISK_ZONE"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-51.2400, -30.0300],
+            [-51.2200, -30.0250],
+            [-51.2150, -30.0400],
+            [-51.2350, -30.0450],
+            [-51.2400, -30.0300]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Área de Risco de Deslizamento - Morro Santa Teresa",
+        "riskLevel": "MODERATE",
+        "type": "OFFICIAL_RISK_ZONE"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-51.2350, -30.0650],
+            [-51.2250, -30.0600],
+            [-51.2200, -30.0750],
+            [-51.2300, -30.0800],
+            [-51.2350, -30.0650]
+          ]
+        ]
+      }
+    }
+  ]
+}

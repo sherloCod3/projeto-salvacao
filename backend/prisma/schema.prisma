@@ -62,5 +62,6 @@ enum RequestType {
   RESCUE
   SUPPLIES
   MEDICAL
+  COMMUNITY_WARNING
   OTHER
 }
