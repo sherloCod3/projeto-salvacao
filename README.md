@@ -11,23 +11,23 @@ A **SalvAção** é uma plataforma MVP de missão crítica focada em conectar v�
 - **Banco de Dados:** PostgreSQL (via Docker).
 - **Internacionalização (i18n):** Padrão nativo para `pt-BR` via dicionários.
 
-## Architectural Decision Records (ADRs) & Engineering Trade-offs
-To ensure the platform remains performant, scalable, and cost-effective under critical emergency loads, we adopted the following architectural decisions:
+## Registros de Decisão Arquitetural (ADRs) & Trade-offs
+Para garantir que a plataforma permaneça performática, escalável e com custo-benefício sob cargas críticas de emergência, adotamos as seguintes decisões arquiteturais:
 
-1. **Frontend Geo-Clustering over Backend Spatial Queries:**
-   - *Context:* Rendering thousands of pins on a map crashes the browser. Querying the backend for spatial clustering under heavy load is expensive.
-   - *Decision:* We send a lightweight payload of active reports and use `supercluster` on the frontend.
-   - *Trade-off:* Slightly larger initial payload, but massive reduction in database hits and zero latency when zooming/panning.
+1. **Clusterização Geográfica no Frontend vs Queries Espaciais no Backend:**
+   - *Contexto:* Renderizar milhares de marcadores no mapa trava o navegador. Consultar o backend para clusterização espacial sob alta carga é custoso.
+   - *Decisão:* Enviamos um payload leve com os relatórios ativos e utilizamos a biblioteca `supercluster` no frontend.
+   - *Trade-off:* Payload inicial ligeiramente maior, mas redução massiva no número de acessos ao banco de dados e latência zero ao dar zoom/navegar no mapa.
 
-2. **Proactive Risk Mapping (Static + Crowdsourced):**
-   - *Context:* We need to warn users of dangerous areas without the fragility and legal risks of web scraping news sites.
-   - *Decision:* Official risk zones (historical floods) are loaded as a static, heavily cached GeoJSON file (0 server cost). To capture real-time, emerging threats, we allow authenticated users to drop "Community Warning" pins (visibly distinct from official zones).
-   - *Trade-off:* Requires community self-moderation (e.g., upvotes/verifications) to prevent spam, but avoids the severe maintenance nightmare and cost of automated scraping/geocoding pipelines.
+2. **Mapeamento Proativo de Riscos (Estático + Colaborativo):**
+   - *Contexto:* Precisamos alertar os usuários sobre áreas perigosas sem a fragilidade e os riscos legais de fazer web scraping em sites de notícias.
+   - *Decisão:* Zonas de risco oficiais (enchentes históricas) são carregadas como um arquivo GeoJSON estático, fortemente em cache (custo zero de servidor). Para capturar ameaças emergentes em tempo real, permitimos que usuários autenticados adicionem "Avisos da Comunidade" (visualmente distintos das zonas oficiais).
+   - *Trade-off:* Requer auto-moderação da comunidade (ex: upvotes/verificações) para evitar spam, mas evita o enorme pesadelo de manutenção e o custo de pipelines automatizados de scraping/geocoding.
 
-3. **Delayed Offline-First (PWA) Implementation:**
-   - *Context:* Emergency apps benefit from offline capabilities (Service Workers).
-   - *Decision:* We consciously delayed PWA caching until the core MVP is stabilized.
-   - *Trade-off:* Users require a connection for the initial phase, but we avoid the "stale cache" debugging nightmare during rapid feature iteration, ensuring maximum stability.
+3. **Adiamento da Implementação Offline-First (PWA):**
+   - *Contexto:* Aplicativos de emergência se beneficiam de recursos offline (Service Workers).
+   - *Decisão:* Adiamos conscientemente o cache do PWA até que o MVP central esteja estabilizado.
+   - *Trade-off:* Os usuários necessitam de conexão na fase inicial, mas evitamos o pesadelo de debugar "caches obsoletos" durante a rápida iteração de funcionalidades, garantindo estabilidade máxima.
 
 ## Principais Funcionalidades
 
