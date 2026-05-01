@@ -71,7 +71,7 @@ describe('API Integration Tests', () => {
         latitude: -30,
         longitude: -51,
         type: 'OTHER',
-        authorId: 'user123'
+        authorId: 'a0000000-0000-0000-0000-000000000001'
       };
 
       const mockCreated = { id: '1', ...reqBody, priority: 'CRITICAL' };
@@ -93,9 +93,22 @@ describe('API Integration Tests', () => {
       });
     });
 
-    it('should return 500 on database error', async () => {
-      (prisma.helpRequest.create as any).mockRejectedValue(new Error('DB Error'));
+    it('should return 400 on invalid (empty) payload', async () => {
       const response = await request(app).post('/api/requests').send({});
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error', 'Dados inválidos');
+    });
+
+    it('should return 500 on database error with valid payload', async () => {
+      (prisma.helpRequest.create as any).mockRejectedValue(new Error('DB Error'));
+      const response = await request(app).post('/api/requests').send({
+        title: 'Need help',
+        description: 'socorro urgente na rua',
+        latitude: -30,
+        longitude: -51,
+        type: 'OTHER',
+        authorId: null,
+      });
       expect(response.status).toBe(500);
     });
   });
@@ -107,13 +120,13 @@ describe('API Integration Tests', () => {
 
       const response = await request(app)
         .put('/api/requests/1/status')
-        .send({ status: 'IN_PROGRESS', volunteerId: 'vol1' });
+        .send({ status: 'IN_PROGRESS', volunteerId: 'b0000000-0000-0000-0000-000000000001' });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockUpdated);
       expect(prisma.helpRequest.update).toHaveBeenCalledWith({
         where: { id: '1' },
-        data: { status: 'IN_PROGRESS', volunteerId: 'vol1' }
+        data: { status: 'IN_PROGRESS', volunteerId: 'b0000000-0000-0000-0000-000000000001' }
       });
     });
     
@@ -132,9 +145,15 @@ describe('API Integration Tests', () => {
       });
     });
 
-    it('should return 500 on database error', async () => {
-      (prisma.helpRequest.update as any).mockRejectedValue(new Error('DB Error'));
+    it('should return 400 on invalid (empty) payload', async () => {
       const response = await request(app).put('/api/requests/1/status').send({});
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error', 'Dados inválidos');
+    });
+
+    it('should return 500 on database error with valid payload', async () => {
+      (prisma.helpRequest.update as any).mockRejectedValue(new Error('DB Error'));
+      const response = await request(app).put('/api/requests/1/status').send({ status: 'RESOLVED' });
       expect(response.status).toBe(500);
     });
   });
@@ -154,9 +173,20 @@ describe('API Integration Tests', () => {
       expect(prisma.user.create).toHaveBeenCalledWith({ data: reqBody });
     });
 
-    it('should return 500 on database error', async () => {
-      (prisma.user.create as any).mockRejectedValue(new Error('DB Error'));
+    it('should return 400 on invalid (empty) payload', async () => {
       const response = await request(app).post('/api/users').send({});
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error', 'Dados inválidos');
+    });
+
+    it('should return 500 on database error with valid payload', async () => {
+      (prisma.user.create as any).mockRejectedValue(new Error('DB Error'));
+      const response = await request(app).post('/api/users').send({
+        name: 'João',
+        email: 'joao@test.com',
+        phone: '51999999999',
+        role: 'VICTIM',
+      });
       expect(response.status).toBe(500);
     });
   });
