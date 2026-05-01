@@ -7,9 +7,10 @@ A **SalvAção** é uma plataforma MVP de missão crítica focada em conectar v�
 ## Arquitetura & Tecnologias
 
 - **Frontend:** Next.js (App Router), React, Tailwind CSS, Framer Motion, Leaflet.
-- **Backend:** Node.js, Express, Prisma ORM.
+- **Backend:** Node.js, Express, Prisma ORM, **Zod** (validação e sanitização de input).
 - **Banco de Dados:** PostgreSQL (via Docker).
 - **Internacionalização (i18n):** Padrão nativo para `pt-BR` via dicionários.
+- **Testes:** Vitest + React Testing Library (frontend) | Vitest + Supertest (backend).
 
 ## Registros de Decisão Arquitetural (ADRs) & Trade-offs
 Para garantir que a plataforma permaneça performática, escalável e com custo-benefício sob cargas críticas de emergência, foram adotadas as seguintes decisões arquiteturais:
@@ -33,8 +34,10 @@ Para garantir que a plataforma permaneça performática, escalável e com custo-
 
 1. **Mapa Interativo Real-Time (Long-Polling):** Exibição em mapa dos chamados de resgate na região afetada, clusterização inteligente e filtros por severidade.
 2. **Sistema Autônomo de Triagem (NLP MVP):** O backend realiza detecção de palavras-chave como `preso`, `sangrando`, `remédio` e `urgente` para escalonar a prioridade da emergência (Crítico, Urgente, Moderado).
-3. **Fluxo Otimizado para Dispositivos Móveis:** Captação precisa e sem atrito de lat/long nativa pelo navegador do dispositivo.
-4. **Design Google Antigravity:** Tipografia legível, contraste alto e interfaces vítreas (Glassmorphism) para clareza absoluta em momentos de tensão.
+3. **Captura de GPS com Feedback Dual-Layer:** Capturação de lat/lng de alta precisão (`enableHighAccuracy`) com exibição de coordenadas e botão de cópia. Toast de sucesso/erro exibe mensagem amigável ao usuário + detalhes técnicos colapsáveis para o desenvolvedor.
+4. **Validação de Input no Backend (Zod):** Todos os endpoints validam o payload com `zod` antes de tocar o banco, retornando `400` com detalhes estruturados para inputs inválidos.
+5. **CORS Restrito:** O backend só aceita requisições de origens autorizadas via `ALLOWED_ORIGIN`.
+6. **Design Google Antigravity:** Tipografia legível, contraste alto e interfaces vítreas (Glassmorphism) para clareza absoluta em momentos de tensão.
 
 ## Como Executar Localmente
 
@@ -46,18 +49,21 @@ Certifique-se de ter `Node.js` (v18+) e `Docker` instalados.
 docker-compose up -d
 ```
 
-**3. Configurar e Iniciar o Backend**
+**3. Configurar o Backend**
 ```bash
 cd backend
+cp .env.example .env  # Ajuste DATABASE_URL e ALLOWED_ORIGIN se necessário
 npm install
 npx prisma generate
 npx prisma db push
 npm run dev
 ```
 
-**4. Iniciar o Frontend**
+**4. Configurar o Frontend**
 ```bash
 cd frontend
+# Crie o arquivo .env.local com a URL do backend:
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > .env.local
 npm install
 npm run dev
 ```

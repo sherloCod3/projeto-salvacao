@@ -15,8 +15,14 @@ Construída com foco em **alta performance**, **acessibilidade** e **resiliênci
 
 - Node.js (versão 18+)
 - NPM, Yarn ou pnpm
+- Backend em execução em `http://localhost:3001` (veja o README raiz)
 
 ## 📦 Instalação e Execução
+
+Configure a URL do backend (obrigatório — sem isso, o mapa e o formulário não funcionam):
+```bash
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > .env.local
+```
 
 Instale as dependências:
 ```bash
@@ -36,7 +42,7 @@ A aplicação possui cobertura de testes para os componentes principais (`Map`, 
 
 Para rodar os testes:
 ```bash
-npm run test
+npm test
 ```
 
 ## 🗺 Sobre a Arquitetura do Mapa
