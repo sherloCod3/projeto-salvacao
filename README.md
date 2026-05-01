@@ -12,22 +12,22 @@ A **SalvAção** é uma plataforma MVP de missão crítica focada em conectar v�
 - **Internacionalização (i18n):** Padrão nativo para `pt-BR` via dicionários.
 
 ## Registros de Decisão Arquitetural (ADRs) & Trade-offs
-Para garantir que a plataforma permaneça performática, escalável e com custo-benefício sob cargas críticas de emergência, adotamos as seguintes decisões arquiteturais:
+Para garantir que a plataforma permaneça performática, escalável e com custo-benefício sob cargas críticas de emergência, foram adotadas as seguintes decisões arquiteturais:
 
 1. **Clusterização Geográfica no Frontend vs Queries Espaciais no Backend:**
    - *Contexto:* Renderizar milhares de marcadores no mapa trava o navegador. Consultar o backend para clusterização espacial sob alta carga é custoso.
-   - *Decisão:* Enviamos um payload leve com os relatórios ativos e utilizamos a biblioteca `supercluster` no frontend.
+   - *Decisão:* É enviado um payload leve com os relatórios ativos e utiliza-se a biblioteca `supercluster` no frontend.
    - *Trade-off:* Payload inicial ligeiramente maior, mas redução massiva no número de acessos ao banco de dados e latência zero ao dar zoom/navegar no mapa.
 
 2. **Mapeamento Proativo de Riscos (Estático + Colaborativo):**
-   - *Contexto:* Precisamos alertar os usuários sobre áreas perigosas sem a fragilidade e os riscos legais de fazer web scraping em sites de notícias.
-   - *Decisão:* Zonas de risco oficiais (enchentes históricas) são carregadas como um arquivo GeoJSON estático, fortemente em cache (custo zero de servidor). Para capturar ameaças emergentes em tempo real, permitimos que usuários autenticados adicionem "Avisos da Comunidade" (visualmente distintos das zonas oficiais).
+   - *Contexto:* É necessário alertar os usuários sobre áreas perigosas sem a fragilidade e os riscos legais de fazer web scraping em sites de notícias.
+   - *Decisão:* Zonas de risco oficiais (enchentes históricas) são carregadas como um arquivo GeoJSON estático, fortemente em cache (custo zero de servidor). Para capturar ameaças emergentes em tempo real, permite-se que usuários autenticados adicionem "Avisos da Comunidade" (visualmente distintos das zonas oficiais).
    - *Trade-off:* Requer auto-moderação da comunidade (ex: upvotes/verificações) para evitar spam, mas evita o enorme pesadelo de manutenção e o custo de pipelines automatizados de scraping/geocoding.
 
 3. **Adiamento da Implementação Offline-First (PWA):**
    - *Contexto:* Aplicativos de emergência se beneficiam de recursos offline (Service Workers).
-   - *Decisão:* Adiamos conscientemente o cache do PWA até que o MVP central esteja estabilizado.
-   - *Trade-off:* Os usuários necessitam de conexão na fase inicial, mas evitamos o pesadelo de debugar "caches obsoletos" durante a rápida iteração de funcionalidades, garantindo estabilidade máxima.
+   - *Decisão:* O cache do PWA foi conscientemente adiado até que o MVP central esteja estabilizado.
+   - *Trade-off:* Os usuários necessitam de conexão na fase inicial, mas evita-se o pesadelo de debugar "caches obsoletos" durante a rápida iteração de funcionalidades, garantindo estabilidade máxima.
 
 ## Principais Funcionalidades
 
