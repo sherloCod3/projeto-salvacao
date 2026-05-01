@@ -97,7 +97,7 @@ app.put('/api/requests/:id/status', async (req: Request, res: Response) => {
 
   try {
     const updatedRequest = await prisma.helpRequest.update({
-      where: { id },
+      where: { id: id as string },
       data: { status, volunteerId: volunteerId || undefined }
     });
     res.json(updatedRequest);
@@ -117,7 +117,7 @@ app.post('/api/users', async (req: Request, res: Response) => {
   const { name, email, phone, role } = parsed.data;
 
   try {
-    const user = await prisma.user.create({ data: { name, email, phone, role } });
+    const user = await prisma.user.create({ data: { name, email, phone, role: role as any } });
     res.status(201).json(user);
   } catch (error) {
     console.error('[POST /api/users] DB error:', error);
