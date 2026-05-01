@@ -1,33 +1,14 @@
 import 'dotenv/config';
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
-import { PrismaClient, type Priority, type RequestType } from '@prisma/client';
+import { type RequestType } from '@prisma/client';
+import prisma from './prisma';
+import { calculatePriority } from './utils/priority';
 
-const prisma = new PrismaClient();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-/**
- * Calcula a prioridade de um pedido com base em heurísticas de texto e tipo de emergência.
- * Utilizado como mecanismo de triagem automática (MVP) para priorizar resgates sem intervenção manual.
- */
-function calculatePriority(description: string, type: RequestType): Priority {
-  const desc = description.toLowerCase();
-
-  // Verifica palavras críticas: vida, encurralado, preso, urgente
-  if (type === 'RESCUE' || desc.includes('vida') || desc.includes('urgente') || desc.includes('preso') || desc.includes('encurralado')) {
-    return 'CRITICAL';
-  }
-
-  // Verifica palavras médicas: machucado, ferido, sangrando, remédio
-  if (type === 'MEDICAL' || desc.includes('ferido') || desc.includes('sangrando') || desc.includes('remédio') || desc.includes('machucado')) {
-    return 'URGENT';
-  }
-
-  return 'MODERATE';
-}
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });
@@ -83,8 +64,6 @@ app.put('/api/requests/:id/status', async (req: Request, res: Response) => {
       where: { id: id as string },
       data: {
         status,
-        // O uso de 'undefined' previne a sobreposição com valores nulos caso a chave não seja informada,
-        // garantindo que o Prisma aplique atualizações parciais sem erros de tipagem.
         volunteerId: volunteerId || undefined,
       }
     });
@@ -110,8 +89,4 @@ app.post('/api/users', async (req: Request, res: Response) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+export default app;

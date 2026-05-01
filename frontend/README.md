@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SalvAção - Frontend
 
-## Getting Started
+A Plataforma de Coordenação em Tempo Real para emergências climáticas e resgates. 
+Construída com foco em **alta performance**, **acessibilidade** e **resiliência** (preparada para offline-first no futuro).
 
-First, run the development server:
+## 🚀 Tecnologias
 
+- **Next.js (App Router)** - Framework React para renderização otimizada.
+- **TypeScript** - Tipagem estática para segurança do código.
+- **Tailwind CSS & Framer Motion** - Estilização utilitária e animações fluidas (UI Premium e Glassmorphism).
+- **React-Leaflet & Supercluster** - Renderização de mapas interativos de alto desempenho com clusterização geográfica em tempo real no client-side.
+- **Vitest & React Testing Library** - Suíte de testes automatizados garantindo qualidade e TDD compliance.
+
+## 🛠 Pré-requisitos
+
+- Node.js (versão 18+)
+- NPM, Yarn ou pnpm
+
+## 📦 Instalação e Execução
+
+Instale as dependências:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Inicie o servidor de desenvolvimento:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Acesse [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Testes Automatizados
 
-## Learn More
+A aplicação possui cobertura de testes para os componentes principais (`Map`, `RequestForm`, `Logo`, Hooks).
 
-To learn more about Next.js, take a look at the following resources:
+Para rodar os testes:
+```bash
+npm run test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🗺 Sobre a Arquitetura do Mapa
+O mapa interativo utiliza `react-leaflet`. Para evitar problemas de hidratação no Next.js (pois o Leaflet requer o objeto `window`), o componente `Map` é carregado dinamicamente (`next/dynamic` com `ssr: false`). 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+As zonas de risco (camada GeoJSON) são carregadas do repositório estático `/public/official-risk-zones.geojson`, garantindo disponibilidade mesmo caso sistemas governamentais fiquem offline.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤝 Contribuição
+Siga os padrões estabelecidos nas PRs, garantindo que `npm run lint` e `npm run test` passem antes de solicitar revisão.
